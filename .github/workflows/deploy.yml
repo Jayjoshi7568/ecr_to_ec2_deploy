@@ -50,7 +50,7 @@ jobs:
 
     steps:
     - name: SSH to EC2 Instance and Run Docker
-      uses: appleboy/ssh-action@v0.1.4
+      uses: appleboy/ssh-action@v1.1.0
       with:
         host: ${{ secrets.EC2_HOST }}  # Public IP of the EC2 instance
         username: ${{ secrets.EC2_USERNAME }}
