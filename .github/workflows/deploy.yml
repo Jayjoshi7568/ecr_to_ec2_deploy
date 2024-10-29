@@ -60,7 +60,7 @@ jobs:
 
   configure_aws_cli:
     runs-on: ubuntu-latest
-    needs: install_aws_cli
+    # needs: install_aws_cli
 
     steps:
     - name: SSH to EC2 Instance and Configure AWS CLI
