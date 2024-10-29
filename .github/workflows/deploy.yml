@@ -1,0 +1,53 @@
+name: Build and Deploy Nginx Image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Log in to Amazon ECR
+      uses: aws-actions/amazon-ecr-login@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    - name: Build Docker image
+      run: |
+        docker build -t my-nginx-image .
+
+    - name: Tag Docker image
+      run: |
+        docker tag my-nginx-image:latest 265697931443.dkr.ecr.us-east-1.amazonaws.com/test/repo:latest
+
+    - name: Push Docker image to Amazon ECR
+      run: |
+        docker push 265697931443.dkr.ecr.us-east-1.amazonaws.com/test/repo:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - name: SSH to EC2 Instance and Run Docker
+      uses: appleboy/ssh-action@v0.1.4
+      with:
+        host: ${{ secrets.EC2_HOST }}  # Public IP of the EC2 instance
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        script: |
+          docker pull 265697931443.dkr.ecr.us-east-1.amazonaws.com/test/repo:latest
+
+          docker stop my-nginx-container || true
+          docker rm my-nginx-container || true
+          docker run -d -p 80:80 --name my-nginx-container 265697931443.dkr.ecr.us-east-1.amazonaws.com/test/repo:latest
