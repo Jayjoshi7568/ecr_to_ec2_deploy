@@ -58,7 +58,9 @@ jobs:
         script: |
           sudo apt-get update
 
-          sudo apt install -y awscli
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o /tmp/awscliv2.zip
+          unzip -q /tmp/awscliv2.zip -d /tmp
+          sudo /tmp/aws/install --update
 
           echo "Logging in to ECR..."
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 265697931443.dkr.ecr.us-east-1.amazonaws.com
