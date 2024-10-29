@@ -38,11 +38,11 @@ jobs:
 
     - name: Tag Docker image
       run: |
-        docker tag my-nginx-image:latest 265697931443.dkr.ecr.us-east-1.amazonaws.com/test/repo:latest
+        docker tag my-nginx-image:latest 265697931443.dkr.ecr.us-east-1.amazonaws.com/test/repo:${{ github.run_number }}
 
     - name: Push Docker image to Amazon ECR
       run: |
-        docker push 265697931443.dkr.ecr.us-east-1.amazonaws.com/test/repo:latest
+        docker push 265697931443.dkr.ecr.us-east-1.amazonaws.com/test/repo:${{ github.run_number }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -73,8 +73,8 @@ jobs:
             exit 1
           fi
 
-          docker pull 265697931443.dkr.ecr.us-east-1.amazonaws.com/test/repo:latest
+          docker pull 265697931443.dkr.ecr.us-east-1.amazonaws.com/test/repo:${{ github.run_number }}
 
           docker stop my-nginx-container || true
           docker rm my-nginx-container || true
-          docker run -d -p 80:80 --name my-nginx-container 265697931443.dkr.ecr.us-east-1.amazonaws.com/test/repo:latest
+          docker run -d -p 80:80 --name my-nginx-container 265697931443.dkr.ecr.us-east-1.amazonaws.com/test/repo:${{ github.run_number }}
