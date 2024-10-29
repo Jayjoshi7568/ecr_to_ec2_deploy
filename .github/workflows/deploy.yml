@@ -37,26 +37,26 @@ jobs:
         run: |
           docker push 265697931443.dkr.ecr.us-east-1.amazonaws.com/test/repo:${{ github.run_number }}
 
-  install_aws_cli:
-    runs-on: ubuntu-latest
-    needs: build
+  # install_aws_cli:
+  #   runs-on: ubuntu-latest
+  #   needs: build
 
-    steps:
-    - name: SSH to EC2 Instance and Install AWS CLI
-      uses: appleboy/ssh-action@v1.1.0
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USERNAME }}
-        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-        script: |
-          sudo apt-get update
-          sudo apt-get install -y curl unzip
+  #   steps:
+  #   - name: SSH to EC2 Instance and Install AWS CLI
+  #     uses: appleboy/ssh-action@v1.1.0
+  #     with:
+  #       host: ${{ secrets.EC2_HOST }}
+  #       username: ${{ secrets.EC2_USERNAME }}
+  #       key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+  #       script: |
+  #         sudo apt-get update
+  #         sudo apt-get install -y curl unzip
 
-          # Install AWS CLI version 2
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          sudo ./aws/install
-          rm -rf awscliv2.zip
+  #         # Install AWS CLI version 2
+  #         curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  #         unzip awscliv2.zip
+  #         sudo ./aws/install --update
+  #         rm -rf awscliv2.zip
 
   configure_aws_cli:
     runs-on: ubuntu-latest
